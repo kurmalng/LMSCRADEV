@@ -1,0 +1,9 @@
+package accountingpackage;
+
+import java.lang.Number;
+
+rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
+	dialect "mvel"
+	when
+	then
+end
