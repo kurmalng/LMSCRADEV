@@ -21,10 +21,10 @@ rule "ACC_FLOWN_REVENUE_AWB_SUSPENSE"
 		accountingJournal.setGlAccountNumber( "99990006" );
 		accountingJournal.setCostCenter( origin );
 		accountingJournal.setCreditAmountSourceCurrency( carrierRevenue );
-		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
-		accountingJournal.setRuleName( "Accounting Flown Revenue" );
-		accountingJournal.setAmountType( "Flown Revenue" );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Flown Revenue Suspense" );
+		accountingJournal.setAmountType( "Flown Revenue Suspense" );
 		insert( accountingJournal );
-		System.out.println(" Flown Revenue ACC_FLOWN_REVENUE_AWB_EXPENSE Expense Executed");
+		System.out.println(" Flown Revenue ACC_FLOWN_REVENUE_AWB_SUSPENSE Expense Executed");
 		context.setOutPutObject( accountingJournal );
 end
