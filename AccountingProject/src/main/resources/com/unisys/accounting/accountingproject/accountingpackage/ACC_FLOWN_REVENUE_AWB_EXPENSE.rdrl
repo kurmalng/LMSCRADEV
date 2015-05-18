@@ -9,6 +9,7 @@ import com.unisys.trans.logistics.lms.accounting.dto.AccountingFlownRevenueDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AirWaybillRevenueDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDetailDto;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.ExportPaymentType;
 
 rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
 	dialect "mvel"
