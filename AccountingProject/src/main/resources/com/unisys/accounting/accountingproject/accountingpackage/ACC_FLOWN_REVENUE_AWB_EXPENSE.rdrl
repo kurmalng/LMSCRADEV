@@ -2,11 +2,13 @@ package com.unisys.accounting.accountingproject.accountingpackage;
 
 import java.lang.Number;
 import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
-import com.unisys.trans.logistics.lms.accounting.dto.AirWaybillRevenueDto;
-import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDetailDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
 import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingFlownRevenueDto;
+import com.unisys.trans.logistics.lms.accounting.dto.AirWaybillRevenueDto;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDto;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDetailDto;
 
 rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
 	dialect "mvel"
@@ -16,12 +18,12 @@ rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "99990006" );
-		accountingJournal.setCostCenter( origin );
-		accountingJournal.setCreditAmountSourceCurrency( carrierRevenue );
-		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setCostCenter( rigi );
+		accountingJournal.setCreditAmountSourceCurrency( carrierRevenu );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
 		accountingJournal.setRuleName( "Accounting Flown Revenue" );
 		accountingJournal.setAmountType( "Flown Revenue" );
 		insert( accountingJournal );
-		context.setOutPutObject( accountingJournal );
 		System.out.println(" Flown Revenue ACC_FLOWN_REVENUE_AWB_EXPENSE Expense Executed");
+		context.setOutPutObject( accountingJournal );
 end
