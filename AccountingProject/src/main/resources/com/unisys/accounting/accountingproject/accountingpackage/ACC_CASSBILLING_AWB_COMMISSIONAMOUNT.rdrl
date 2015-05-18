@@ -10,16 +10,19 @@ rule "ACC_CASSBILLING_AWB_COMMISSIONAMOUNT"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : cassParticipantInvoiceAWBDto.netAmountPayable > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : cassParticipantInvoiceAWBDto.commissionAmount > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( netAmountPayable );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Agent Debtor" );
-		accountingJournal.setAmountType( "Agent Debtor" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
+		accountingJournal.setDebitAmountSourceCurrency( commissionAmount );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB Commission Amount" );
+		accountingJournal.setAmountType( "Commission Amount" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( request.getArAccountNumber() );
 		insert( accountingJournal );
 		context.setOutPutObject( accountingJournal );
+		
+		
+		
+		System.out.println("***************Commission Amount AWB EXECUTED*************" + commissionAmount);
 end
