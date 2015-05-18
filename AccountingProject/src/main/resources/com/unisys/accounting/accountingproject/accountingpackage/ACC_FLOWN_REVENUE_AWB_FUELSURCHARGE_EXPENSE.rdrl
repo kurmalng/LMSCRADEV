@@ -18,13 +18,13 @@ rule "ACC_FLOWN_REVENUE_AWB_FUELSURCHARGE_EXPENSE"
 		request : AccountingDroolsRequest( triggerPoint == "Flown Revenue" , ruleIndicator == AccountingRuleIndicators.AWB , accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PC || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PD || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PG || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PP || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PX , hostACN : accFlownRevenueDto.hostACNNumber != null , accFlownRevenueDto.acnNumber == hostACN , hostCarrier : accFlownRevenueDto.hostCarrierCode != null , accFlownRevenueDto.onlineProrationDetailDto.carrierCode == hostCarrier , origin : accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.originStation != null , eval( request.otherChargeCodeExists("MY") ))
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "99990003" );
+		accountingJournal.setGlAccountNumber( "99990004" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( request.getOtherChargeCode("MY") );
-		accountingJournal.setRuleName( "Accounting Flown Revenue Fuel Surcharge Suspense" );
-		accountingJournal.setAmountType( "Fuel Surcharge Suspense" );
+		accountingJournal.setCreditAmountSourceCurrency( request.getOtherChargeCode("MY") );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Flown Revenue Fuel Surcharge" );
+		accountingJournal.setAmountType( "Fuel Surcharge " );
 		insert( accountingJournal );
-		System.out.println("Fuel Surcharge Flown Revenue Executed");
+		System.out.println("Fuel Surcharge  Expense  Flown Revenue Executed");
 		context.setOutPutObject( accountingJournal );
 end
