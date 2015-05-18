@@ -6,11 +6,22 @@ import com.unisys.trans.logistics.lms.accounting.dto.AirWaybillRevenueDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingAirWaybillDetailDto;
 import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
 import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
 
 rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		( request : AccountingDroolsRequest( triggerPoint == "Flown Revenue" , ruleIndicator == AccountingRuleIndicators.AWB , accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PC || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PD || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PG || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PP || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PX , carrierRevenue : accFlownRevenueDto.onlineProrationDetailDto.carrierRevenue > 0.0B , hostACN : accFlownRevenueDto.hostACNNumber != null , accFlownRevenueDto.acnNumber == hostACN , hostCarrier : accFlownRevenueDto.hostCarrierCode != null ) )
+		request : AccountingDroolsRequest( triggerPoint == "Flown Revenue" , ruleIndicator == AccountingRuleIndicators.AWB , accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PC || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PD || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PG || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PP || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PX , carrierRevenue : accFlownRevenueDto.onlineProrationDetailDto.carrierRevenue > 0.0B , hostACN : accFlownRevenueDto.hostACNNumber != null , accFlownRevenueDto.acnNumber == hostACN , hostCarrier : accFlownRevenueDto.hostCarrierCode != null , accFlownRevenueDto.onlineProrationDetailDto.carrierCode == hostCarrier , origin : accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.originStation != null )
 	then
+		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
+		accountingJournal.setGlAccountNumber( "99990006" );
+		accountingJournal.setCostCenter( origin );
+		accountingJournal.setCreditAmountSourceCurrency( carrierRevenue );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Flown Revenue" );
+		accountingJournal.setAmountType( "Flown Revenue" );
+		insert( accountingJournal );
+		context.setOutPutObject( accountingJournal );
+		System.out.println(" Flown Revenue ACC_FLOWN_REVENUE_AWB_EXPENSE Expense Executed");
 end
