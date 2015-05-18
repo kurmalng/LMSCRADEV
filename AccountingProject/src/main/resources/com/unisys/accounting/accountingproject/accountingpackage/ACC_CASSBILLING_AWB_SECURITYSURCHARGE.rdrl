@@ -1,0 +1,24 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_CASSBILLING_AWB_SECURITYSURCHARGE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , eval( otherChargeCodeExists("MY") ))
+	then
+		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
+		accountingJournal.setGlAccountNumber( "99990003" );
+		accountingJournal.setCreditAmountSourceCurrency( request.getOtherChargeCode("MY") );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB Fuel Surcharge" );
+		accountingJournal.setAmountType( "Fuel Surcharge" );
+		accountingJournal.setCostCenter( origin );
+		insert( accountingJournal );
+		context.setOutPutObject( accountingJournal );
+end
