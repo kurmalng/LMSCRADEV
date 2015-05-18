@@ -10,16 +10,19 @@ rule "ACC_CASSBILLING_AWB_OCDA"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : cassParticipantInvoiceAWBDto.netAmountPayable > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , ocda : cassParticipantInvoiceAWBDto.otherChargesDueAgent > 0.0B )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( netAmountPayable );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Agent Debtor" );
-		accountingJournal.setAmountType( "Agent Debtor" );
+		accountingJournal.setGlAccountNumber( "99990012" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
+		accountingJournal.setDebitAmountSourceCurrency( ocda );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB OCDA" );
+		accountingJournal.setAmountType( "Other Charge Due Agent" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( request.getArAccountNumber() );
 		insert( accountingJournal );
 		context.setOutPutObject( accountingJournal );
+		
+		
+		
+		System.out.println("***************Other Charge Due Agent AWB EXECUTED*************");
 end
