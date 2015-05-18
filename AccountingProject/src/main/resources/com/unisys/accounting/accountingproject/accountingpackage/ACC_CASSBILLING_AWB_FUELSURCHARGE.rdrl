@@ -1,0 +1,24 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_CASSBILLING_AWB_FUELSURCHARGE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : cassParticipantInvoiceAWBDto.commissionAmount > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
+	then
+		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
+		accountingJournal.setGlAccountNumber( "14300551" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
+		accountingJournal.setDebitAmountSourceCurrency( commissionAmount );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB Commission Amount" );
+		accountingJournal.setAmountType( "Commission Amount" );
+		accountingJournal.setCostCenter( origin );
+		insert( accountingJournal );
+		context.setOutPutObject( accountingJournal );
+end
