@@ -18,13 +18,13 @@ rule "ACC_FLOWN_REVENUE_AWB_INTR_INW_SUSPENSE"
 		request : AccountingDroolsRequest( triggerPoint == "Flown Revenue" , ruleIndicator == AccountingRuleIndicators.AWB , accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PC || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PD || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PG || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PP || accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.exportPaycode == ExportPaymentType.PX , carrierRevenue : accFlownRevenueDto.onlineProrationDetailDto.carrierRevenue > 0.0B , hostACN : accFlownRevenueDto.hostACNNumber != null , accFlownRevenueDto.acnNumber == hostACN , hostCarrier : accFlownRevenueDto.hostCarrierCode != null , accFlownRevenueDto.onlineProrationDetailDto.carrierCode != hostCarrier , origin : accFlownRevenueDto.airWaybillRevenueDto.accountingAirWaybillDto.airWaybillDetail.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "99990018" );
+		accountingJournal.setGlAccountNumber( "99990019" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
-		accountingJournal.setDebitAmountSourceCurrency( carrierRevenue );
-		accountingJournal.setRuleName( "Accounting Interline Provision" );
-		accountingJournal.setAmountType( "Interline Provision" );
+		accountingJournal.setCreditAmountSourceCurrency( carrierRevenue );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Interline Inward Suspense" );
+		accountingJournal.setAmountType( "Interline Inward Suspense" );
 		insert( accountingJournal );
-		System.out.println("  Flown Revenue Interline Provision Executed ");
+		System.out.println(" Flown Revenue Interline Inward Suspense Executed");
 		context.setOutPutObject( accountingJournal );
 end
