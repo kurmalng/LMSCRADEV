@@ -18,8 +18,8 @@ rule "ACC_FLOWN_REVENUE_AWB_EXPENSE"
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "99990006" );
-		accountingJournal.setCostCenter( rigi );
-		accountingJournal.setCreditAmountSourceCurrency( carrierRevenu );
+		accountingJournal.setCostCenter( origin );
+		accountingJournal.setCreditAmountSourceCurrency( carrierRevenue );
 		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
 		accountingJournal.setRuleName( "Accounting Flown Revenue" );
 		accountingJournal.setAmountType( "Flown Revenue" );
