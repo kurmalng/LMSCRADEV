@@ -10,7 +10,7 @@ rule "ACC_COMMERCIALEXPORT_AWB_OCDA"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , ocda : commercialParticipantInvoiceAWBDto.otherChargesDueAgent, origin : commercialParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , ocda : commercialParticipantInvoiceAWBDto.otherChargesDueAgent > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "99990012" );
