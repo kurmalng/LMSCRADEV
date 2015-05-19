@@ -13,11 +13,16 @@ rule "ACC_CASSBILLING_AWB_WEIGHTCHARGE_SUSPENSE"
 		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , weightCharge : cassParticipantInvoiceAWBDto.weightCharge > 0.0B )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14108888" );
-		accountingJournal.setCreditAmountSourceCurrency( weightCharge );
-		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Weight Charge Expense" );
-		accountingJournal.setAmountType( "Weight Charge Expense" );
+		accountingJournal.setGlAccountNumber( "20800505" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
+		accountingJournal.setDebitAmountSourceCurrency( weightCharge );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB Weight Charge Suspense" );
+		accountingJournal.setAmountType( "Weight Charge Suspense" );
 		accountingJournal.setCostCenter( origin );
 		insert( accountingJournal );
+		
+		
+		
+		System.out.println("***************Weight charge Suspense AWB EXECUTED*************" + weightCharge);
+		context.setOutPutObject( accountingJournal );
 end
