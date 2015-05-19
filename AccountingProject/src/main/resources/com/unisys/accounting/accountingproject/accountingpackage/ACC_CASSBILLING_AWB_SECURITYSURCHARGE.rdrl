@@ -15,14 +15,11 @@ rule "ACC_CASSBILLING_AWB_SECURITYSURCHARGE"
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "20441032" );
 		accountingJournal.setCreditAmountSourceCurrency( request.getOtherChargeCode("SC") );
-		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
 		accountingJournal.setRuleName( "Accounting CASS Billing AWB Security Surcharge" );
 		accountingJournal.setAmountType( "Security Surcharge" );
 		accountingJournal.setCostCenter( origin );
 		insert( accountingJournal );
-		context.setOutPutObject( accountingJournal );
-		
-		
-		
 		System.out.println("***************Security Surcharge AWB EXECUTED*************" + request.getOtherChargeCode("SC"));
+		context.setOutPutObject( accountingJournal );
 end
