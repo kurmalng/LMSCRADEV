@@ -1,9 +1,20 @@
 package com.unisys.accounting.accountingproject.accountingpackage;
 
 import java.lang.Number;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryDto;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
 
 rule "ACC_CASSBILLING_AWB_ACCOUNTINGMONTH"
 	dialect "mvel"
 	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , cassParticipantInvoiceAWBDto != null , execDate : cassParticipantInvoiceAWBDto.executionDate != null )
 	then
+		AccountingEntryDto accountingEntry = new AccountingEntryDto();
+		accountingEntry.setAccountingMonth( request.getAccountingMonth(execDate,new java.util.Date()) );
+		insert( accountingEntry );
+		context.setOutPutObject( accountingEntry );
+		System.out.println("***************Accounting Month EXECUTED*************");
 end
