@@ -1,0 +1,21 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryDto;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+
+rule "ACC_COMMERCIALEXPORT_AWB_ACCOUNTINGMONTH"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commercialParticipantInvoiceAWBDto != null , execDate : commercialParticipantInvoiceAWBDto.executionDate != null )
+	then
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd-MMM-yyyy");
+		AccountingEntryDto accountingEntry = new AccountingEntryDto();
+		accountingEntry.setAccountingDate( execDate );
+		insert( accountingEntry );
+		System.out.println("***************Accounting Date EXECUTED*************");
+		context.setOutPutObject( accountingEntry );
+end
