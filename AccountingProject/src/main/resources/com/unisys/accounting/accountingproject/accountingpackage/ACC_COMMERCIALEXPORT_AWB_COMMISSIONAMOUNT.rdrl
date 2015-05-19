@@ -10,7 +10,7 @@ rule "ACC_COMMERCIALEXPORT_AWB_COMMISSIONAMOUNT"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : commercialParticipantInvoiceAWBDto.commissionAmount, origin : commercialParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : commercialParticipantInvoiceAWBDto.commissionAmount > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "99990007" );
