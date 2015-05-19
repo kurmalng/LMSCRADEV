@@ -10,11 +10,11 @@ rule "ACC_COMMERCIALEXPORT_AWB_ACCOUNTINGMONTH"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , cassParticipantInvoiceAWBDto != null , execDate : cassParticipantInvoiceAWBDto.executionDate != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commercialParticipantInvoiceAWBDto != null , execDate : commercialParticipantInvoiceAWBDto.executionDate != null )
 	then
 		AccountingEntryDto accountingEntry = new AccountingEntryDto();
 		accountingEntry.setAccountingMonth( request.getAccountingMonth(execDate,new java.util.Date()) );
 		insert( accountingEntry );
-		context.setOutPutObject( accountingEntry );
 		System.out.println("***************Accounting Month EXECUTED*************");
+		context.setOutPutObject( accountingEntry );
 end
