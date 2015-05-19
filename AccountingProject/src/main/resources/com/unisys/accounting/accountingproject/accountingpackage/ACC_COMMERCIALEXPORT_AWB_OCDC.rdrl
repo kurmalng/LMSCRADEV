@@ -1,0 +1,25 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALEXPORT_AWB_OCDC"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , ocda : commercialParticipantInvoiceAWBDto.otherChargesDueAgent, origin : commercialParticipantInvoiceAWBDto.originStation != null )
+	then
+		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
+		accountingJournal.setGlAccountNumber( "99990012" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
+		accountingJournal.setDebitAmountSourceCurrency( ocda );
+		accountingJournal.setRuleName( "Accounting Commercial Export AWB OCDA" );
+		accountingJournal.setAmountType( "OCDA" );
+		accountingJournal.setCostCenter( origin );
+		insert( accountingJournal );
+		System.out.println("***************Other Charge Due Agent AWB EXECUTED*************");
+		context.setOutPutObject( accountingJournal );
+end
