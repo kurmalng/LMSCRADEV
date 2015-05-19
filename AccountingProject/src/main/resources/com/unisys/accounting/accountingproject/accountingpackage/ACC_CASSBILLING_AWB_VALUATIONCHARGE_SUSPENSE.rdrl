@@ -10,19 +10,19 @@ rule "ACC_CASSBILLING_AWB_VALUATIONCHARGE_SUSPENSE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , weightCharge : cassParticipantInvoiceAWBDto.weightCharge > 0.0B )
+		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , valuationCharge : cassParticipantInvoiceAWBDto.valuationCharge > 0.0B )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14108888" );
-		accountingJournal.setCreditAmountSourceCurrency( weightCharge );
+		accountingJournal.setGlAccountNumber( "20091066" );
+		accountingJournal.setCreditAmountSourceCurrency( valuationCharge );
 		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Weight Charge Expense" );
-		accountingJournal.setAmountType( "Weight Charge Expense" );
+		accountingJournal.setRuleName( "Accounting CASS Billing AWB Valuation Charge Suspense" );
+		accountingJournal.setAmountType( "Valuation Charge Suspense" );
 		accountingJournal.setCostCenter( origin );
 		insert( accountingJournal );
 		
 		
 		
-		System.out.println("***************Weight charge Expense AWB EXECUTED*************" + weightCharge );
+		System.out.println("***************Valuation Charge Suspense EXECUTED*************");
 		context.setOutPutObject( accountingJournal );
 end
