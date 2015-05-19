@@ -13,16 +13,13 @@ rule "ACC_CASSBILLING_AWB_COMMISSIONAMOUNT"
 		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : cassParticipantInvoiceAWBDto.commissionAmount > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
+		accountingJournal.setGlAccountNumber( "99990007" );
+		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
 		accountingJournal.setDebitAmountSourceCurrency( commissionAmount );
 		accountingJournal.setRuleName( "Accounting CASS Billing AWB Commission Amount" );
 		accountingJournal.setAmountType( "Commission Amount" );
 		accountingJournal.setCostCenter( origin );
 		insert( accountingJournal );
-		context.setOutPutObject( accountingJournal );
-		
-		
-		
 		System.out.println("***************Commission Amount AWB EXECUTED*************" + commissionAmount);
+		context.setOutPutObject( accountingJournal );
 end
