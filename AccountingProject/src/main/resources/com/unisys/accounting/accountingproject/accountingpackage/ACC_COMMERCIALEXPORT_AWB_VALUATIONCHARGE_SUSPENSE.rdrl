@@ -13,7 +13,7 @@ rule "ACC_COMMERCIALEXPORT_AWB_VALUATIONCHARGE_SUSPENSE"
 		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14108888" );
+		accountingJournal.setGlAccountNumber( "20091066" );
 		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
 		accountingJournal.setDebitAmountSourceCurrency( valuationCharge );
 		accountingJournal.setRuleName( "Accounting Commercial Export AWB Valuation Charge Suspense" );
