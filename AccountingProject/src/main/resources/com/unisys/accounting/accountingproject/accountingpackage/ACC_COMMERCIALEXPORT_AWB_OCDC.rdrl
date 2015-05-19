@@ -19,7 +19,6 @@ rule "ACC_COMMERCIALEXPORT_AWB_OCDC"
 		accountingJournal.setRuleName( "Accounting Commercial Export AWB OCDC" );
 		accountingJournal.setAmountType( "OCDC" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( "1330001" );
 		insert( accountingJournal );
 		System.out.println("***************Other charge due carrier AWB EXECUTED*************");
 		context.setOutPutObject( accountingJournal );
