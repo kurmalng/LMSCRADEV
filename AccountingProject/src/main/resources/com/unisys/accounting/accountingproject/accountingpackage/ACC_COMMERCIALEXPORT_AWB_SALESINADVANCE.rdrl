@@ -10,17 +10,16 @@ rule "ACC_COMMERCIALEXPORT_AWB_SALESINADVANCE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : commercialParticipantInvoiceAWBDto.netAmountPayable > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : commercialParticipantInvoiceAWBDto.originStation != null , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B || valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( netAmountPayable );
-		accountingJournal.setRuleName( "Accounting Commercial Export AWB Agent Debtor" );
-		accountingJournal.setAmountType( "Agent Debtor" );
+		accountingJournal.setGlAccountNumber( "99990008" );
+		accountingJournal.setCreditAmountSourceCurrency( weightCharge.add(valuationCharge) );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Commercial Export AWB Sales In Advance" );
+		accountingJournal.setAmountType( "Sales In Advance" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( "1330001" );
 		insert( accountingJournal );
-		System.out.println("***************Agent Debtor EXECUTED*************" +netAmountPayable);
+		System.out.println("***************Sales In Advance AWB EXECUTED*************");
 		context.setOutPutObject( accountingJournal );
 end
