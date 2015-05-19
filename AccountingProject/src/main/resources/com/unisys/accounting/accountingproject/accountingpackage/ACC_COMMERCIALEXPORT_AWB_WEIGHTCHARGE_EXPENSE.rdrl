@@ -10,17 +10,16 @@ rule "ACC_COMMERCIALEXPORT_AWB_WEIGHTCHARGE_EXPENSE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : commercialParticipantInvoiceAWBDto.netAmountPayable > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( netAmountPayable );
-		accountingJournal.setRuleName( "Accounting Commercial Export AWB Agent Debtor" );
-		accountingJournal.setAmountType( "Agent Debtor" );
+		accountingJournal.setGlAccountNumber( "14108888" );
+		accountingJournal.setCreditAmountSourceCurrency( weightCharge );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Commercial Export AWB Weight Charge Expense" );
+		accountingJournal.setAmountType( "Weight Charge Expense" );
 		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( "1330001" );
 		insert( accountingJournal );
-		System.out.println("***************Agent Debtor EXECUTED*************" +netAmountPayable);
+		System.out.println("***************Weight charge Expense AWB EXECUTED*************");
 		context.setOutPutObject( accountingJournal );
 end
