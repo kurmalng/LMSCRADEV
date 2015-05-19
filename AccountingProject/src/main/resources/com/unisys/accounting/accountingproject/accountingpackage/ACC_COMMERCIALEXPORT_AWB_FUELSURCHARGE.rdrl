@@ -10,13 +10,13 @@ rule "ACC_COMMERCIALEXPORT_AWB_FUELSURCHARGE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , eval( otherChargeCodeExists("MY") ))
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , origin : cassParticipantInvoiceAWBDto.originStation != null , eval( otherChargeCodeExists("MY") ))
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
 		accountingJournal.setGlAccountNumber( "99990003" );
 		accountingJournal.setCreditAmountSourceCurrency( request.getOtherChargeCode("MY") );
-		accountingJournal.setDebitAmountSourceCurrency( 0.0 );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Fuel Surcharge" );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Commercial Export AWB Fuel Surcharge" );
 		accountingJournal.setAmountType( "Fuel Surcharge" );
 		accountingJournal.setCostCenter( origin );
 		insert( accountingJournal );
