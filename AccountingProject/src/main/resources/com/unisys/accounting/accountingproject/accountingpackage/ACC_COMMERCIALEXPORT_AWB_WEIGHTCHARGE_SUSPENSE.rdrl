@@ -13,7 +13,7 @@ rule "ACC_COMMERCIALEXPORT_AWB_WEIGHTCHARGE_SUSPENSE"
 		request : AccountingDroolsRequest( triggerPoint == "Commercial Export Billing" , ruleIndicator == AccountingRuleIndicators.AWB , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B , origin : commercialParticipantInvoiceAWBDto.originStation != null )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14108888" );
+		accountingJournal.setGlAccountNumber( "20800505" );
 		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
 		accountingJournal.setDebitAmountSourceCurrency( weightCharge );
 		accountingJournal.setRuleName( "Accounting Commercial Export AWB Weight Charge Suspense" );
