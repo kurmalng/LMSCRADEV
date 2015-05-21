@@ -10,17 +10,20 @@ rule "ACC_COMMERCIALIMPORT_AWB_AGENTDEBTOR"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "CASS Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : cassParticipantInvoiceAWBDto.netAmountPayable > 0.0B , origin : cassParticipantInvoiceAWBDto.originStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , netAmountPayable : commercialParticipantInvoiceAWBDto.netAmountPayable > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
 	then
-		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "14300551" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0 );
-		accountingJournal.setDebitAmountSourceCurrency( netAmountPayable );
-		accountingJournal.setRuleName( "Accounting CASS Billing AWB Agent Debtor" );
-		accountingJournal.setAmountType( "Agent Debtor" );
-		accountingJournal.setCostCenter( origin );
-		accountingJournal.setArAccountNumber( request.getArAccountNumber() );
-		insert( accountingJournal );
-		System.out.println("***************Agent Debtor EXECUTED*************" +netAmountPayable);
-		context.setOutPutObject( accountingJournal );
+		AccountingEntryJournalDto agentAccEntry = new AccountingEntryJournalDto();
+		agentAccEntry.setGlAccountNumber( "14300551" );
+		agentAccEntry.setCreditAmountSourceCurrency( 0.0B );
+		agentAccEntry.setDebitAmountSourceCurrency( netAmountPayable );
+		agentAccEntry.setRuleName( "Accounting Commercial Import AWB Agent Debtor" );
+		agentAccEntry.setAmountType( "Agent Debtor" );
+		agentAccEntry.setCostCenter( destination );
+		agentAccEntry.setArAccountNumber( 1330001 );
+		insert( agentAccEntry );
+		
+		
+		
+		System.out.println("***************Agent Debtor AWB EXECUTED*************" + netAmountPayable);
+		context.setOutPutObject( agentAccEntry );
 end
