@@ -10,14 +10,19 @@ rule "ACC_COMMERCIALIMPORT_AWB_OCDC"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , otherChargesDueAgent : commercialParticipantInvoiceAWBDto.otherChargesDueAgent > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , destination : commercialParticipantInvoiceAWBDto.destinationStation != null , otherChargesDueAgent : commercialParticipantInvoiceAWBDto.otherChargesDueCarrier > 0.0B )
 	then
 		AccountingEntryJournalDto ocdcAccEntry = new AccountingEntryJournalDto();
-		ocdcAccEntry.setGlAccountNumber( "99990012" );
-		ocdcAccEntry.setCreditAmountSourceCurrency( 0.0B );
-		ocdcAccEntry.setDebitAmountSourceCurrency( otherChargesDueAgent );
-		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB OCDA" );
-		ocdcAccEntry.setAmountType( "OCDA" );
+		ocdcAccEntry.setGlAccountNumber( "99990009" );
+		ocdcAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeSuspenseCode("MY","SC") );
+		ocdcAccEntry.setDebitAmountSourceCurrency( 0.0B );
+		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB OCDC" );
+		ocdcAccEntry.setAmountType( "OCDC" );
 		ocdcAccEntry.setCostCenter( destination );
 		insert( ocdcAccEntry );
+		context.setOutPutObject( ocdcAccEntry );
+		
+		
+		
+		System.out.println("***************Other charge due carrier AWB EXECUTED*************" + request.getOtherChargeSuspenseCode("MY","SC"));
 end
