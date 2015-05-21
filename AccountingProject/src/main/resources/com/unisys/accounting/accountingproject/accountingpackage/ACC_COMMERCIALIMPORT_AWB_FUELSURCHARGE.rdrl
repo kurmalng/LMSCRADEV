@@ -1,0 +1,24 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALIMPORT_AWB_FUELSURCHARGE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : commercialParticipantInvoiceAWBDto.commissionAmount > 0.0B )
+	then
+		AccountingEntryJournalDto commAccEntry = new AccountingEntryJournalDto();
+		commAccEntry.setGlAccountNumber( "99990007" );
+		commAccEntry.setCreditAmountSourceCurrency( 0.0B );
+		commAccEntry.setDebitAmountSourceCurrency( commissionAmount );
+		commAccEntry.setRuleName( "Acounting Commercial Import AWB Commission Amount" );
+		commAccEntry.setAmountType( "Commission Amount" );
+		commAccEntry.setCostCenter( "MSP" );
+		insert( commAccEntry );
+		context.setOutPutObject( commAccEntry );
+end
