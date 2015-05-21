@@ -10,14 +10,19 @@ rule "ACC_COMMERCIALIMPORT_AWB_COMMISSIONAMOUNT"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B || valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : commercialParticipantInvoiceAWBDto.commissionAmount > 0.0B )
 	then
-		AccountingEntryJournalDto weightAccEntry = new AccountingEntryJournalDto();
-		weightAccEntry.setGlAccountNumber( "99990021" );
-		weightAccEntry.setCreditAmountSourceCurrency( weightCharge.add(valuationCharge) );
-		weightAccEntry.setDebitAmountSourceCurrency( 0.0B );
-		weightAccEntry.setRuleName( "Accounting Commercial Import AWB CC Freight Collection" );
-		weightAccEntry.setAmountType( "CC Freight Collection" );
-		weightAccEntry.setCostCenter( destination );
-		insert( weightAccEntry );
+		AccountingEntryJournalDto commAccEntry = new AccountingEntryJournalDto();
+		commAccEntry.setGlAccountNumber( "99990007" );
+		commAccEntry.setCreditAmountSourceCurrency( 0.0B );
+		commAccEntry.setDebitAmountSourceCurrency( commissionAmount );
+		commAccEntry.setRuleName( "Acounting Commercial Import AWB Commission Amount" );
+		commAccEntry.setAmountType( "Commission Amount" );
+		commAccEntry.setCostCenter( "MSP" );
+		insert( commAccEntry );
+		context.setOutPutObject( commAccEntry );
+		
+		
+		
+		System.out.println("***************Commission Amount AWB EXECUTED*************" + commissionAmount);
 end
