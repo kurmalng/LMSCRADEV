@@ -1,0 +1,23 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALIMPORT_AWB_COMMISSIONAMOUNT"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B || valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+	then
+		AccountingEntryJournalDto weightAccEntry = new AccountingEntryJournalDto();
+		weightAccEntry.setGlAccountNumber( "99990021" );
+		weightAccEntry.setCreditAmountSourceCurrency( weightCharge.add(valuationCharge) );
+		weightAccEntry.setDebitAmountSourceCurrency( 0.0B );
+		weightAccEntry.setRuleName( "Accounting Commercial Import AWB CC Freight Collection" );
+		weightAccEntry.setAmountType( "CC Freight Collection" );
+		weightAccEntry.setCostCenter( destination );
+		insert( weightAccEntry );
+end
