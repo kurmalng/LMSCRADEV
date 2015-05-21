@@ -1,0 +1,24 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALIMPORT_AWB_VALUATIONCHARGE_EXPENSE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , eval( otherChargeCodeExists("SC") ), destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+	then
+		AccountingEntryJournalDto ocdcAccEntry = new AccountingEntryJournalDto();
+		ocdcAccEntry.setGlAccountNumber( "99990002" );
+		ocdcAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeCode("SC") );
+		ocdcAccEntry.setDebitAmountSourceCurrency( 0.0 );
+		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB Security Surcharge" );
+		ocdcAccEntry.setAmountType( "Security Surcharge" );
+		ocdcAccEntry.setCostCenter( destination );
+		insert( ocdcAccEntry );
+		context.setOutPutObject( ocdcAccEntry );
+end
