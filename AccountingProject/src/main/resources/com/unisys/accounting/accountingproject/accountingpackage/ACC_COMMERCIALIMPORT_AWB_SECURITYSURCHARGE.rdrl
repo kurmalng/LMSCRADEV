@@ -1,0 +1,24 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALIMPORT_AWB_SECURITYSURCHARGE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , destination : commercialParticipantInvoiceAWBDto.destinationStation != null , otherChargesDueAgent : commercialParticipantInvoiceAWBDto.otherChargesDueCarrier > 0.0B )
+	then
+		AccountingEntryJournalDto ocdcAccEntry = new AccountingEntryJournalDto();
+		ocdcAccEntry.setGlAccountNumber( "99990009" );
+		ocdcAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeSuspenseCode("MY","SC") );
+		ocdcAccEntry.setDebitAmountSourceCurrency( 0.0B );
+		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB OCDC" );
+		ocdcAccEntry.setAmountType( "OCDC" );
+		ocdcAccEntry.setCostCenter( destination );
+		insert( ocdcAccEntry );
+		context.setOutPutObject( ocdcAccEntry );
+end
