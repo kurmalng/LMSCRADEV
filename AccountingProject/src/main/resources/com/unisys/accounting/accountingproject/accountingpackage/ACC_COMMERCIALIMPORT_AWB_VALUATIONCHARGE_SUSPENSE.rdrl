@@ -1,0 +1,23 @@
+package com.unisys.accounting.accountingproject.accountingpackage;
+
+import java.lang.Number;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingDroolsRequest;
+import com.unisys.trans.logistics.lms.framework.dto.RulesExecutionContext;
+import com.unisys.trans.logistics.lms.accounting.dto.constants.AccountingRuleIndicators;
+import com.unisys.trans.logistics.lms.accounting.dto.AccountingEntryJournalDto;
+
+rule "ACC_COMMERCIALIMPORT_AWB_VALUATIONCHARGE_SUSPENSE"
+	dialect "mvel"
+	when
+		context : RulesExecutionContext( )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+	then
+		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
+		accountingJournal.setGlAccountNumber( "99990011" );
+		accountingJournal.setCreditAmountSourceCurrency( valuationCharge );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Commercial Import AWB Valuation Charge Expense" );
+		accountingJournal.setAmountType( "Valuation Charge Expense" );
+		accountingJournal.setCostCenter( destination );
+		insert( accountingJournal );
+end
