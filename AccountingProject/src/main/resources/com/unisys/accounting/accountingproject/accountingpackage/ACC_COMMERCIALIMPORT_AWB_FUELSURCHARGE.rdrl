@@ -10,15 +10,19 @@ rule "ACC_COMMERCIALIMPORT_AWB_FUELSURCHARGE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , commissionAmount : commercialParticipantInvoiceAWBDto.commissionAmount > 0.0B )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , eval( otherChargeCodeExists("MY") ), destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
 	then
 		AccountingEntryJournalDto commAccEntry = new AccountingEntryJournalDto();
-		commAccEntry.setGlAccountNumber( "99990007" );
-		commAccEntry.setCreditAmountSourceCurrency( 0.0B );
-		commAccEntry.setDebitAmountSourceCurrency( commissionAmount );
-		commAccEntry.setRuleName( "Acounting Commercial Import AWB Commission Amount" );
-		commAccEntry.setAmountType( "Commission Amount" );
-		commAccEntry.setCostCenter( "MSP" );
+		commAccEntry.setGlAccountNumber( "99990003" );
+		commAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeCode("MY") );
+		commAccEntry.setDebitAmountSourceCurrency( 0.0B );
+		commAccEntry.setRuleName( "Accounting Commercial Import AWB Fuel Surcharge" );
+		commAccEntry.setAmountType( "Fuel Surcharge" );
+		commAccEntry.setCostCenter( "destination" );
 		insert( commAccEntry );
 		context.setOutPutObject( commAccEntry );
+		
+		
+		
+		System.out.println("***************Fuel Surcharge AWB EXECUTED*************" + request.getOtherChargeCode("MY"));
 end
