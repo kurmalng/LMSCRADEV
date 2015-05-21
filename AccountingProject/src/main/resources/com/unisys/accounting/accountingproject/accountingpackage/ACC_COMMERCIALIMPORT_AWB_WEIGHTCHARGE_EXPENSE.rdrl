@@ -10,16 +10,19 @@ rule "ACC_COMMERCIALIMPORT_AWB_WEIGHTCHARGE_EXPENSE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , valuationCharge : commercialParticipantInvoiceAWBDto.valuationCharge > 0.0B , destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , destination : commercialParticipantInvoiceAWBDto.destinationStation != null , weightCharge : commercialParticipantInvoiceAWBDto.weightCharge > 0.0B )
 	then
 		AccountingEntryJournalDto accountingJournal = new AccountingEntryJournalDto();
-		accountingJournal.setGlAccountNumber( "20091066" );
-		accountingJournal.setCreditAmountSourceCurrency( 0.0B );
-		accountingJournal.setDebitAmountSourceCurrency( valuationCharge );
-		accountingJournal.setRuleName( "Accounting Commercial Import AWB Valuation Charge Suspense" );
-		accountingJournal.setAmountType( "Valuation Charge Suspense" );
+		accountingJournal.setGlAccountNumber( "14108888" );
+		accountingJournal.setCreditAmountSourceCurrency( weightCharge );
+		accountingJournal.setDebitAmountSourceCurrency( 0.0B );
+		accountingJournal.setRuleName( "Accounting Commercial Import AWB Weight Charge Expense" );
+		accountingJournal.setAmountType( "Weight Charge Expense " );
 		accountingJournal.setCostCenter( destination );
 		insert( accountingJournal );
-		System.out.println("***************Valuation Charge Suspense EXECUTED*************");
+		
+		
+		
+		System.out.println("***************Weight charge Expense AWB EXECUTED*************" + weightCharge);
 		context.setOutPutObject( accountingJournal );
 end
