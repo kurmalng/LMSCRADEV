@@ -10,15 +10,19 @@ rule "ACC_COMMERCIALIMPORT_AWB_SECURITYSURCHARGE"
 	dialect "mvel"
 	when
 		context : RulesExecutionContext( )
-		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , destination : commercialParticipantInvoiceAWBDto.destinationStation != null , otherChargesDueAgent : commercialParticipantInvoiceAWBDto.otherChargesDueCarrier > 0.0B )
+		request : AccountingDroolsRequest( triggerPoint == "Commercial Import Billing" , ruleIndicator == AccountingRuleIndicators.AWB , eval( otherChargeCodeExists("SC") ), destination : commercialParticipantInvoiceAWBDto.destinationStation != null )
 	then
 		AccountingEntryJournalDto ocdcAccEntry = new AccountingEntryJournalDto();
-		ocdcAccEntry.setGlAccountNumber( "99990009" );
-		ocdcAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeSuspenseCode("MY","SC") );
-		ocdcAccEntry.setDebitAmountSourceCurrency( 0.0B );
-		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB OCDC" );
-		ocdcAccEntry.setAmountType( "OCDC" );
+		ocdcAccEntry.setGlAccountNumber( "99990002" );
+		ocdcAccEntry.setCreditAmountSourceCurrency( request.getOtherChargeCode("SC") );
+		ocdcAccEntry.setDebitAmountSourceCurrency( 0.0 );
+		ocdcAccEntry.setRuleName( "Accounting Commercial Import AWB Security Surcharge" );
+		ocdcAccEntry.setAmountType( "Security Surcharge" );
 		ocdcAccEntry.setCostCenter( destination );
 		insert( ocdcAccEntry );
 		context.setOutPutObject( ocdcAccEntry );
+		
+		
+		
+		System.out.println("***************Security Surcharge AWB EXECUTED*************" + request.getOtherChargeCode("SC"));
 end
